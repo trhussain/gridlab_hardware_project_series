@@ -1,2 +1,3 @@
-# gridlab_hardware_project_series
-This is the hardware project series developed by UCSD's GrID Lab 
+# GrID Lab Hardware Project Series 
+
+Hello! This project series is split into two DIFFERENT projects, please make sure you download the currect one! 
