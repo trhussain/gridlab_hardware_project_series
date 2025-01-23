@@ -1,43 +1,73 @@
 var gateway = `ws://${window.location.hostname}/ws`;
 var websocket;
-// Init web socket when the page loads
+
+// Init WebSocket when the page loads
 window.addEventListener('load', onload);
 
-function onload(event) {
-    initWebSocket();
-}
-
-function getReadings(){
-    websocket.send("getReadings");
+function onload() {
+  initWebSocket();
+  initButtons();
 }
 
 function initWebSocket() {
-    console.log('Trying to open a WebSocket connection…');
-    websocket = new WebSocket(gateway);
-    websocket.onopen = onOpen;
-    websocket.onclose = onClose;
-    websocket.onmessage = onMessage;
+  console.log('Trying to open a WebSocket connection…');
+  websocket = new WebSocket(gateway);
+  websocket.onopen = onOpen;
+  websocket.onclose = onClose;
+  websocket.onmessage = onMessage;
 }
 
-// When websocket is established, call the getReadings() function
-function onOpen(event) {
-    console.log('Connection opened');
-    getReadings();
+function onOpen() {
+  console.log('WebSocket connection opened');
+  getReadings();
 }
 
-function onClose(event) {
-    console.log('Connection closed');
-    setTimeout(initWebSocket, 2000);
+function onClose() {
+  console.log('WebSocket connection closed');
+  setTimeout(initWebSocket, 2000);
 }
 
-// Function that receives the message from the ESP32 with the readings
 function onMessage(event) {
-    console.log(event.data);
-    var myObj = JSON.parse(event.data);
-    var keys = Object.keys(myObj);
+  console.log(event.data);
+  var myObj = JSON.parse(event.data);
+  var keys = Object.keys(myObj);
 
-    for (var i = 0; i < keys.length; i++){
-        var key = keys[i];
-        document.getElementById(key).innerHTML = myObj[key];
+  // Update sensor readings
+  keys.forEach((key) => {
+    if (document.getElementById(key)) {
+      document.getElementById(key).innerHTML = myObj[key];
     }
+  });
+
+  // Update button states
+  if (myObj.output26) {
+    updateButtonState("gpio26", myObj.output26);
+  }
+  if (myObj.output27) {
+    updateButtonState("gpio27", myObj.output27);
+  }
+}
+
+function getReadings() {
+  websocket.send("getReadings");
+}
+
+function initButtons() {
+  document.getElementById("gpio26").addEventListener("click", () => toggleGPIO(26));
+  document.getElementById("gpio27").addEventListener("click", () => toggleGPIO(27));
+}
+
+function toggleGPIO(gpio) {
+  websocket.send(`toggle${gpio}`);
+}
+
+function updateButtonState(buttonId, state) {
+  const button = document.getElementById(buttonId);
+  if (state === "on") {
+    button.innerHTML = `${buttonId.toUpperCase()} ON`;
+    button.classList.remove("off");
+  } else {
+    button.innerHTML = `${buttonId.toUpperCase()} OFF`;
+    button.classList.add("off");
+  }
 }
