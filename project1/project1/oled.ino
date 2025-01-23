@@ -1,4 +1,4 @@
-
+#include "config.h"
 void oled_test() {
   Serial.begin(9600);
   Wire.begin(SDA_PIN, SCL_PIN);

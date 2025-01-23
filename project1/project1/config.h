@@ -5,13 +5,22 @@
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include <ACS712.h>
+// Current & Voltage sensor pins 
+#define solarVSensor 4
+#define solarCSensor 15
 
-
-// -------------------- Define Constants -------------------- //
 
 // Custom SDA/SCL Pins (ensure they match yours)
-#define SDA_PIN 15            
-#define SCL_PIN 7           
+#define SDA_PIN 41            
+#define SCL_PIN 40           
+
+
+
+
+
+
+
 
 // OLED Constants
 #define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
