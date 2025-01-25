@@ -1,41 +1,10 @@
-#include <WiFi.h>
-#include <AsyncTCP.h>
-#include <ESPAsyncWebServer.h>
-#include "LittleFS.h"
-#include <Arduino_JSON.h>
-
-// Soft Access Point credentials
-const char* ssid = "ESP32-Access-Point";
-const char* password = "123456789";
-
-// Create AsyncWebServer object on port 80
-AsyncWebServer server(80);
-
-// Create a WebSocket object
-AsyncWebSocket ws("/ws");
-
-// Json Variable to Hold Sensor Readings
-JSONVar readings;
-
-// Timer variables
-unsigned long lastTime = 0;
-unsigned long timerDelay = 15000;
-
-// Create a sensor object
-
-// Auxiliar variables to store the current output state
-String output26State = "off";
-String output27State = "off";
-
-// Assign output variables to GPIO pins
-const int output26 = 26;
-const int output27 = 27;
+#include "config.h"
 
 // Get Sensor Readings and return JSON object
 String getSensorReadings() {
-  readings["temperature"] = String("potato");
-  readings["humidity"] = String("234");
-  readings["pressure"] = String("456");
+  readings["vbatt"] = String(mySensorData.vBatt);
+  readings["solarbatt"] = String(mySensorData.vSolar);
+  readings["solarcurrent"] = String(mySensorData.aSolar);
   return JSON.stringify(readings);
 }
 
@@ -53,7 +22,6 @@ void notifyClients(String sensorReadings) {
 }
 String getGPIOStates() {
   readings["output26"] = output26State;
-  readings["output27"] = output27State;
   return JSON.stringify(readings);
 }
 
@@ -74,13 +42,7 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
       Serial.println("Toggled GPIO 26");
       notifyClients(getGPIOStates());
     } 
-    // Check if "toggle27" is part of the message
-    else if (strstr(message, "toggle27") != NULL) {
-      output27State = (output27State == "off") ? "on" : "off";
-      digitalWrite(output27, (output27State == "on") ? HIGH : LOW);
-      Serial.println("Toggled GPIO 27");
-      notifyClients(getGPIOStates());
-    } 
+
     // Handle other messages, like "getReadings"
     else if (strstr(message, "getReadings") != NULL) {
       notifyClients(getSensorReadings());
@@ -122,11 +84,10 @@ void initWiFi() {
   Serial.println(IP);
 }
 
-void setup() {
-  // Start Serial communication
-  Serial.begin(115200);
 
-  // Initialize components
+
+void wifiSetup() { 
+ // Initialize components
   initLittleFS();
   initWebSocket();
   initWiFi();
@@ -142,24 +103,9 @@ void setup() {
   // Start the server
   server.begin();
 
-
-
-    pinMode(output26, OUTPUT);
-  pinMode(output27, OUTPUT);
-  // Set outputs to LOW
+  // Configure the LED 
+  pinMode(output26, OUTPUT);
   digitalWrite(output26, LOW);
-  digitalWrite(output27, LOW);
-  delay(100);
-  Serial.println("Startup done");
-}
 
-void loop() {
-
-
-        if ((millis() - lastTime) > timerDelay) {
-          notifyClients(getSensorReadings());
-          lastTime = millis();
-        }
-        ws.cleanupClients();
 
 }

@@ -1,6 +1,5 @@
 #include "config.h"
 void oled_test() {
-  Serial.begin(9600);
   Wire.begin(SDA_PIN, SCL_PIN);
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
   if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {

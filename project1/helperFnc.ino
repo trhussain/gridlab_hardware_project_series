@@ -6,30 +6,15 @@ double VRMS = 0;
 double AmpsRMS = 0;
 
 void sensorSetup() {
-  Serial.begin(9600);
 
   pinMode(solarVSensor, INPUT);
   pinMode(solarCSensor, INPUT);
 
 }
 
-void readSolarVoltage() { 
-  float voltageDiv = (float)analogRead(solarVSensor) / 4095;
-  Serial.println("------------------------");
-  Serial.print("Solar Panel Voltage: ");
-  Serial.println(voltageDiv*14.6);
 
-  Serial.print("Solar Panel Current mA: ");
-  float ACSValue = 0.0, BaseVol = 1.52; // zero current reading BaseVol
-
-  ACSValue = analogRead(solarCSensor);
-  Serial.println((((ACSValue) * (3.3 / 4095.0)) - BaseVol ) / 0.066 );
-  Serial.print("Raw ADC Value: ");
-  Serial.println(ACSValue);
-}
 
 void finalSetup() { 
-  Serial.begin(9600);
 
   pinMode(solarVSensor, INPUT);
   pinMode(solarCSensor, INPUT);
@@ -53,29 +38,35 @@ void finalSetup() {
 }
 
 void finalDisplay() { 
-  int battVRaw = analogRead(3);
-  int solarVRaw = analogRead(4);
-  int solarCRaw = analogRead(7);
+  float battVRaw = analogRead(battVSensor);
+  float solarVRaw = analogRead(solarVSensor);
+  float solarCRaw = analogRead(solarCSensor);
 
   const int battVR1 = 10; const int battVR2 = 20; 
   const int solarVR1 = 10; const int solarVR2 = 20;
   const int solarCR1 = 10; const int solarCR2 = 20;
+
   // Convert the analog reading (which goes from 0 - 4096) to a voltage (0 - 3V3):
-  float battV = battVRaw * (3.3/ 4096);
-  float solarV = solarVRaw * (3.3/ 4096);
-  float solarC = solarCRaw * (3.3/ 4096);
+  mySensorData.vBatt = (battVRaw / 4096 ) * battDivider;
+  mySensorData.vSolar = (solarVRaw /4096 ) * solarDivider;
+  mySensorData.aSolar= solarCRaw * (3.3/ 4096);
+
 
   Serial.println("----------------------------------");
+  Serial.print("Raw Batt & Raw Solar V: ");
+  Serial.print(battVRaw);
+  Serial.print(" & ");
+  Serial.println(solarVRaw);
   Serial.print("Batt Voltage: ");
-  Serial.println(battV * 4.2);
+  Serial.println(mySensorData.vBatt);
 
   Serial.print("Solar Voltage: ");
-  Serial.println(solarV * 4.2);
+  Serial.println(mySensorData.vSolar);
 
   Serial.print("Solar Current: ");
-  Serial.println(solarC * 4.2);
+  Serial.println(mySensorData.aSolar);
 
-  displayReadings(battV * 4.2, solarV * 4.2, solarC * 4.2)
+  displayReadings(mySensorData.vBatt , mySensorData.vSolar , mySensorData.aSolar );
 }
 
 

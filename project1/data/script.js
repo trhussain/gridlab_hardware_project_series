@@ -43,9 +43,7 @@ function onMessage(event) {
   if (myObj.output26) {
     updateButtonState("gpio26", myObj.output26);
   }
-  if (myObj.output27) {
-    updateButtonState("gpio27", myObj.output27);
-  }
+
 }
 
 function getReadings() {
@@ -54,7 +52,6 @@ function getReadings() {
 
 function initButtons() {
   document.getElementById("gpio26").addEventListener("click", () => toggleGPIO(26));
-  document.getElementById("gpio27").addEventListener("click", () => toggleGPIO(27));
 }
 
 function toggleGPIO(gpio) {

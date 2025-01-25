@@ -6,14 +6,24 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <ACS712.h>
+
+#include <WiFi.h>
+#include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
+#include "LittleFS.h"
+#include <Arduino_JSON.h>
+
+
 // Current & Voltage sensor pins 
-#define solarVSensor 4
-#define solarCSensor 15
+#define solarVSensor 34
+#define solarCSensor 3
+#define battVSensor 35
 
-
+#define battDivider 7.17
+#define solarDivider 16.95
 // Custom SDA/SCL Pins (ensure they match yours)
-#define SDA_PIN 41            
-#define SCL_PIN 40           
+#define SDA_PIN 4 // DO NOT USE 2             
+#define SCL_PIN 15           
 
 
 
@@ -54,5 +64,36 @@ static const unsigned char PROGMEM logo_bmp[] =
   0b01111100, 0b11110000,
   0b01110000, 0b01110000,
   0b00000000, 0b00110000 };
+
+
+
+// ----------- Web Server Variables
+
+
+// Soft Access Point credentials
+const char* ssid = "REPLACE WITH YOUR NAME";
+const char* password = "REPLACE WITH YOUR BIRTHDAY";
+
+// Create AsyncWebServer object on port 80
+AsyncWebServer server(80);
+
+// Create a WebSocket object
+AsyncWebSocket ws("/ws");
+
+// Json Variable to Hold Sensor Readings
+JSONVar readings;
+
+
+
+// Auxiliar variables to store the current output state
+String output26State = "off";
+const int output26 = 26;
+
+struct sensorData { 
+  float vBatt; 
+  float vSolar;
+  float aSolar;
+} mySensorData;
+
 
 #endif // CONFIG_H

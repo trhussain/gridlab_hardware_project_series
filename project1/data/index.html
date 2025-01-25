@@ -1,34 +1,33 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>ESP IOT DASHBOARD</title>
+    <title>ESP IoT Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="style.css">
   </head>
   <body>
     <div class="topnav">
-      <h1>SENSOR READINGS (WEBSOCKET)</h1>
-    </div>
+      <h1>Sensor Reading Data</h1>
+    </div> 
     <div class="content">
       <div class="card-grid">
         <div class="card">
-          <p class="card-title"><i class="fas fa-thermometer-threequarters" style="color:#059e8a;"></i> Temperature</p>
-          <p class="reading"><span id="temperature">N/A</span> &deg;C</p>
+          <p class="card-title"><i style="color:#059e8a;"></i> Vbatt: </p>
+          <p class="reading"><span id="vbatt">N/A</span> V</p>
         </div>
         <div class="card">
-          <p class="card-title">Humidity</p>
-          <p class="reading"><span id="humidity">N/A</span> &percnt;</p>
+          <p class="card-title">Solar Batt</p>
+          <p class="reading"><span id="solarbatt">N/A</span> V</p>
         </div>
         <div class="card">
-          <p class="card-title">Pressure</p>
-          <p class="reading"><span id="pressure">N/A</span> hPa</p>
+          <p class="card-title">Solar Current</p>
+          <p class="reading"><span id="solarcurrent">N/A</span> A</p>
         </div>
       </div>
     </div>
     <div class="control-buttons">
       <p>GPIO Control:</p>
       <button id="gpio26" class="button">GPIO 26 OFF</button>
-      <button id="gpio27" class="button">GPIO 27 OFF</button>
     </div>
     <script src="script.js"></script>
   </body>

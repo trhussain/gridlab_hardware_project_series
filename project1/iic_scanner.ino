@@ -3,7 +3,6 @@
 void i2c_setup()
 {
   Wire.begin(SDA_PIN, SCL_PIN); 
-  Serial.begin(9600);
   while (!Serial);             // Leonardo: wait for serial monitor
   Serial.println("\nI2C Scanner");
 }
